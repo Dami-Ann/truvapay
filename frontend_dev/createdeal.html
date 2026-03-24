@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create a Deal – TruvaPay</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+    </div>
+    TruvaPay
+  </div>
+  <a href="index.html" class="back-link" style="margin-bottom:0;">← Back to Home</a>
+</nav>
+
+<div class="page-bg">
+  <div class="page-inner">
+    <div class="card">
+      <h2 style="font-size:1.6rem;font-weight:800;margin-bottom:6px;">Create a New Deal</h2>
+      <p style="color:var(--text-light);font-size:.93rem;margin-bottom:28px;">Enter your deal details to generate a secure payment link to share with your client.</p>
+
+      <!-- Deal Type Toggle -->
+      <div style="display:flex;gap:10px;margin-bottom:24px;">
+        <button onclick="setType('standard')" id="typeStandard" class="btn btn-primary btn-sm" style="flex:1;">📝 Standard Deal</button>
+        <button onclick="setType('milestone')" id="typeMilestone" class="btn btn-outline btn-sm" style="flex:1;">🪙 Multi-Milestone Deal</button>
+      </div>
+
+      <!-- STANDARD DEAL FORM -->
+      <div id="standardForm">
+        <div class="form-group">
+          <label>Deal Title *</label>
+          <input type="text" id="dealTitle" placeholder="e.g. Logo Design Project"/>
+        </div>
+        <div class="form-group">
+          <label>Description *</label>
+          <textarea id="dealDesc" placeholder="Describe the deliverables, what is included, what is not..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total Amount (₦) *</label>
+            <div class="prefix-input">
+              <span class="prefix">₦</span>
+              <input type="number" id="dealAmount" placeholder="0.00" min="100"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Delivery Date *</label>
+            <input type="date" id="dealDate"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name (Seller) *</label>
+            <input type="text" id="sellerName" placeholder="Your full name"/>
+          </div>
+          <div class="form-group">
+            <label>Client Name (Buyer)</label>
+            <input type="text" id="buyerName" placeholder="Client's name (optional)"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Revision Terms</label>
+          <input type="text" id="revisions" placeholder="e.g. 2 rounds of revisions included"/>
+          <div class="form-hint">Let your client know how many revisions are covered in this deal.</div>
+        </div>
+        <div class="form-group">
+          <label>Your Email</label>
+          <input type="email" id="sellerEmail" placeholder="you@email.com — for deal notifications"/>
+        </div>
+      </div>
+
+      <!-- MILESTONE FORM -->
+      <div id="milestoneForm" style="display:none;">
+        <div class="form-group">
+          <label>Project Title *</label>
+          <input type="text" id="mTitle" placeholder="e.g. Website Redesign Project"/>
+        </div>
+        <div class="form-group">
+          <label>Project Description</label>
+          <textarea id="mDesc" placeholder="Describe the overall project..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="mSeller" placeholder="Your name"/>
+          </div>
+          <div class="form-group">
+            <label>Client Name</label>
+            <input type="text" id="mBuyer" placeholder="Client name"/>
+          </div>
+        </div>
+
+        <h4 style="font-size:.95rem;font-weight:700;margin-bottom:14px;">Milestones</h4>
+        <div id="milestoneList"></div>
+        <button onclick="addMilestone()" class="btn btn-outline btn-sm" style="margin-top:10px;margin-bottom:20px;">+ Add Milestone</button>
+
+        <div style="background:var(--gray-bg);border-radius:var(--r-sm);padding:14px;font-size:.88rem;color:var(--text-light);margin-bottom:20px;">
+          💡 Each milestone is funded and released separately. The client pays each one only when you're ready to start it.
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-lg btn-full" onclick="createDeal()">🔒 Generate Secure Deal Link</button>
+      <p style="text-align:center;font-size:.8rem;color:var(--text-light);margin-top:10px;">Your link will be generated instantly. No account required.</p>
+
+      <!-- RESULT -->
+      <div class="deal-result" id="dealResult">
+        <div style="font-size:2.2rem;margin-bottom:8px;">🎉</div>
+        <h4>Deal Created Successfully!</h4>
+        <p style="font-size:.85rem;color:var(--text-light);">Copy this link and share it with your client to fund the deal.</p>
+        <div class="copy-box">
+          <span id="generatedLink">https://truvapay.app/deal/TRV-2026-00001</span>
+          <button class="copy-btn" onclick="copyLink()">Copy</button>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;">
+          <button onclick="shareWhatsApp()" class="btn btn-success btn-sm">📱 Share on WhatsApp</button>
+          <button onclick="shareTwitter()" class="btn btn-sm" style="background:#1DA1F2;color:white;">🐦 Share on Twitter</button>
+          <a href="#" id="viewDealBtn" class="btn btn-primary btn-sm">View Deal Page →</a>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:white;border-radius:var(--r-sm);border:1.5px solid var(--gray-border);">
+          <div style="font-size:.78rem;color:var(--text-light);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">🛡️ Protected by TruvaPay</div>
+          <div style="font-size:.82rem;color:var(--text);">This deal is backed by escrow protection. Funds only release on your approval.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:0;">
+      <div class="card-sm" style="text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">🔒</div>
+        <div style="font-weight:700;font-size:.85rem;">Escrow Protected</div>
+        <div style="font-size:.75rem;color:var(--text-light);">Funds held until delivery</div>
+      </div>
+      <div class="card-sm" style="text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">⚡</div>
+        <div style="font-weight:700;font-size:.85rem;">Instant Link</div>
+        <div style="font-size:.75rem;color:var(--text-light);">Share anywhere you chat</div>
+      </div>
+      <div class="card-sm" style="text-align:center;">
+        <div style="font-size:1.4rem;margin-bottom:6px;">🤝</div>
+        <div style="font-weight:700;font-size:.85rem;">Auto Release</div>
+        <div style="font-size:.75rem;color:var(--text-light);">Paid in 3–5 days of delivery</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/javascript/createdeal.js"></script>
+</body>
+</html>

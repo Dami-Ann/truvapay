@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deal Details – TruvaPay</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+    </div>
+    TruvaPay
+  </div>
+  <a href="deals.html" class="back-link" style="margin-bottom:0;">← Back to Deals</a>
+</nav>
+
+<div class="page-bg">
+  <div class="page-inner-wide" id="dealRoot">
+    <!-- Rendered by JS below -->
+    <div style="text-align:center;padding:60px 0;">
+      <div style="font-size:2.5rem;margin-bottom:10px;">⏳</div>
+      <p style="color:var(--text-light);">Loading deal...</p>
+    </div>
+  </div>
+</div>
+
+<!-- FUND MODAL -->
+<div class="modal-overlay" id="modalFund">
+  <div class="modal">
+    <h3>💳 Fund This Deal</h3>
+    <p class="modal-desc">You're about to pay <strong id="modalAmt">₦0</strong> into escrow. Funds are held safely and only released after you approve delivery.</p>
+    <div class="form-group">
+      <label>Your Email (for receipt)</label>
+      <input type="email" id="payerEmail" placeholder="email@example.com"/>
+    </div>
+    <p style="font-size:.78rem;color:var(--text-light);margin-bottom:16px;">By funding you agree: money is only released to seller upon your approval or after 3–5 days of silence.</p>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-lg" onclick="initiatePayment()" style="flex:1;">Pay via Interswitch →</button>
+      <button class="btn btn-outline" onclick="closeModal('modalFund')">Cancel</button>
+    </div>
+    <p style="font-size:.72rem;color:var(--text-light);margin-top:12px;text-align:center;">🔒 Secured by Interswitch · No card details stored</p>
+  </div>
+</div>
+
+<!-- DELIVERY MODAL -->
+<div class="modal-overlay" id="modalDeliver">
+  <div class="modal">
+    <h3>📦 Submit Your Delivery</h3>
+    <p class="modal-desc">Upload your work or paste a link. The client will be notified to review and approve.</p>
+    <div class="form-group">
+      <label>Delivery Link</label>
+      <input type="url" id="deliveryLink" placeholder="https://drive.google.com/... or Dropbox link"/>
+    </div>
+    <div class="form-group">
+      <label>Notes to Client</label>
+      <textarea id="deliveryNote" placeholder="Any notes about the delivery, what to review, passwords, etc."></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-primary btn-lg" onclick="submitDelivery()" style="flex:1;">Submit Delivery</button>
+      <button class="btn btn-outline" onclick="closeModal('modalDeliver')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISPUTE MODAL -->
+<div class="modal-overlay" id="modalDispute">
+  <div class="modal">
+    <h3>⚠️ Open a Dispute</h3>
+    <p class="modal-desc">Tell us what went wrong. Our team reviews evidence from both parties and resolves within 48 hours. A ₦5,000–₦15,000 fee applies to prevent frivolous disputes.</p>
+    <div class="form-group">
+      <label>Reason for Dispute *</label>
+      <textarea id="disputeReason" placeholder="Describe the issue clearly. E.g. Work was not delivered, quality is far below agreed standard..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Evidence Link (optional)</label>
+      <input type="url" id="disputeEvidence" placeholder="Screenshot, document, email link..."/>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger btn-lg" onclick="submitDispute()" style="flex:1;">Submit Dispute</button>
+      <button class="btn btn-outline" onclick="closeModal('modalDispute')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== JAVASCRIPT ===== -->
+ 
+<script src="assets/javascript/deal.js"></script>
+</body>
+</html>

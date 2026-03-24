@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Deals – TruvaPay</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+    </div>
+    TruvaPay
+  </div>
+  <div class="nav-center">
+    <a href="index.html">Home</a>
+    <a href="deals.html" class="active">My Deals</a>
+  </div>
+  <div class="nav-right">
+    <a href="createdeal.html" class="btn btn-primary">+ Create Deal</a>
+  </div>
+</nav>
+
+<div class="page-bg">
+  <div class="page-inner-wide">
+
+    <!-- Trust Score Card at top -->
+    <div class="trust-score-card" style="margin-bottom:20px;">
+      <div class="trust-score-badge">⭐ Your Portable Trust Score</div>
+      <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div class="trust-score-number" id="tsNum">—</div>
+          <div class="trust-score-label">Based on your real transaction history</div>
+        </div>
+        <div class="trust-score-row" id="tsRow">
+          <div class="trust-metric"><span>Total Deals</span><strong id="tsDone">0</strong></div>
+          <div class="trust-metric"><span>Completed</span><strong id="tsCompleted">0</strong></div>
+          <div class="trust-metric"><span>In Escrow</span><strong id="tsEscrow">₦0</strong></div>
+          <div class="trust-metric"><span>Disputes</span><strong id="tsDisputes">0</strong></div>
+        </div>
+      </div>
+      <p style="font-size:.78rem;opacity:.5;margin-top:12px;">🔗 Share your Trust Score link anywhere — it's your portable freelancer identity</p>
+      <button onclick="copyTrustLink()" class="btn btn-outline btn-sm" style="margin-top:10px;color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.08);">📤 Copy Trust Profile Link</button>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-grid">
+      <div class="stat-card navy">
+        <div class="stat-label">Total Deals</div>
+        <div class="stat-val" id="statTotal">0</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">In Escrow</div>
+        <div class="stat-val" id="statEscrow" style="font-size:1.3rem;">₦0</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Completed</div>
+        <div class="stat-val" id="statCompleted">0</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Trust Score</div>
+        <div class="stat-val" id="statScore" style="color:var(--blue-light);">—</div>
+      </div>
+    </div>
+
+    <!-- Filter + List -->
+    <div class="filter-bar">
+      <h2>My Deals</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <select id="filterStatus" onchange="renderDeals()">
+          <option value="all">All Status</option>
+          <option value="pending">⏳ Pending</option>
+          <option value="funded">💰 Funded</option>
+          <option value="delivered">📦 Delivered</option>
+          <option value="completed">✅ Completed</option>
+          <option value="disputed">⚠️ Disputed</option>
+        </select>
+        <a href="createdeal.html" class="btn btn-primary btn-sm">+ New Deal</a>
+      </div>
+    </div>
+
+    <div class="deals-list" id="dealsList"></div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script src="assets/javascript/deals.js"></script>
+</body>
+</html>
