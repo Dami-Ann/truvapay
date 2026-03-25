@@ -1,5 +1,8 @@
-!-- ===== JAVASCRIPT ===== -->
+<!-- ===== JAVASCRIPT ===== -->
 <script>
+  /* ---- Backend URL ---- */
+  const API = 'http://localhost:3000';
+
   /* ---- Utilities ---- */
   function param(n) { return new URLSearchParams(window.location.search).get(n); }
   function fmt(n)    { return new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',minimumFractionDigits:0}).format(n); }
@@ -17,7 +20,7 @@
   let deal = null;
 
   const DEMO_DEALS = [
-    { dealId:'TRV-2026-00124', type:'standard', title:'Logo Design Project', desc:'Design a modern logo with 3 initial concepts and 2 rounds of revisions.', amount:'200000', date:'2026-04-30', seller:'Okafor Mary Chimaobi', buyer:'Sarah Johnson', status:'funded', created:'2026-04-25T09:00:00' },
+    { dealId:'TRV-2026-00124', type:'standard', title:'Logo Design Project', desc:'Design a modern logo with 3 initial concepts and 2 rounds of revisions.', amount:'200000', date:'2026-04-30', seller:'Okafor Mary Chimaobi', buyer:'Sarah Johnson', status:'pending', created:'2026-04-25T09:00:00' },
     { dealId:'TRV-2026-00098', type:'standard', title:'Landing Page Development', desc:'Build a responsive landing page for product launch with SEO optimization.', amount:'350000', date:'2026-04-20', seller:'You', buyer:'Ahmed Ibrahim', status:'completed', created:'2026-04-15T10:00:00' },
     { dealId:'TRV-2026-00077', type:'milestone', title:'Website Redesign Project', desc:'Full redesign including 3 pages, mobile responsive, CMS setup.', amount:'750000', date:'2026-05-20', seller:'You', buyer:'Grace Obi', status:'pending', created:'2026-04-22T11:00:00',
       milestones:[
@@ -27,18 +30,6 @@
       ]
     },
   ];
-
-  function loadDeal() {
-    const stored = JSON.parse(localStorage.getItem('truvapay_deals') || '[]');
-    deal = stored.find(d => d.dealId === dealId) || DEMO_DEALS.find(d => d.dealId === dealId);
-
-    if (!deal) {
-      // Create a fresh demo deal for any unknown ID
-      deal = { dealId: dealId || 'TRV-2026-00124', type:'standard', title:'Logo Design Project', desc:'Design a modern logo with 3 initial concepts and 2 rounds of revisions.', amount:'200000', date:'2026-04-30', seller:'Okafor Mary Chimaobi', buyer:'Sarah Johnson', status:'funded', created:'2026-04-25T09:00:00' };
-    }
-
-    render();
-  }
 
   /* ---- Status map ---- */
   const STATUS = {
@@ -344,24 +335,106 @@
     toast(msgs[newStatus] || '✓ Updated!');
   }
 
-  /* ---- Payment simulation ---- */
-  function initiatePayment() {
+  /* ---- Real Interswitch Payment ---- */
+  async function initiatePayment() {
+    const email = document.getElementById('payerEmail').value.trim();
+
+    if (!email) {
+      alert('Please enter your email address.');
+      return;
+    }
+
     closeModal('modalFund');
-    toast('🔀 Redirecting to Interswitch...');
-    // In real app: POST to your backend → get Interswitch payment URL → redirect
-    // For demo: simulate after 2s
-    setTimeout(() => { setStatus('funded'); }, 2000);
+    toast('⏳ Connecting to Interswitch...');
+
+    try {
+      // Step 1 — save deal to backend
+      const saveRes = await fetch(`${API}/api/deals`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title:  deal.title,
+          desc:   deal.desc,
+          amount: deal.amount,
+          date:   deal.date,
+          seller: deal.seller,
+          buyer:  deal.buyer,
+          email:  email,
+          type:   deal.type || 'standard',
+        })
+      });
+
+      const saveData = await saveRes.json();
+
+      if (!saveData.success) {
+        toast('❌ Could not save deal. Try again.');
+        return;
+      }
+
+      const backendDealId = saveData.deal.dealId;
+
+      // Step 2 — initialize Interswitch payment
+      const payRes = await fetch(`${API}/api/pay/initialize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dealId: backendDealId, email })
+      });
+
+      const payData = await payRes.json();
+
+      if (payData.success && payData.paymentUrl) {
+        toast('✅ Redirecting to Interswitch payment...');
+        // Step 3 — redirect to Interswitch payment page
+        setTimeout(() => { window.location.href = payData.paymentUrl; }, 800);
+      } else {
+        toast('❌ Could not initialize payment. Try again.');
+      }
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      // If backend is down — fall back to demo mode for hackathon
+      toast('⚠️ Backend offline — using demo mode');
+      setTimeout(() => { setStatus('funded'); }, 1500);
+    }
   }
 
-  function submitDelivery() {
+  /* ---- Submit delivery — connects to backend ---- */
+  async function submitDelivery() {
+    const link = document.getElementById('deliveryLink').value.trim();
+    const note = document.getElementById('deliveryNote').value.trim();
     closeModal('modalDeliver');
+
+    try {
+      await fetch(`${API}/api/deals/${deal.dealId}/deliver`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deliveryLink: link, deliveryNote: note })
+      });
+    } catch(e) {
+      console.log('Backend offline, updating locally');
+    }
+
     setStatus('delivered');
   }
 
-  function submitDispute() {
-    const reason = document.getElementById('disputeReason').value.trim();
+  /* ---- Submit dispute — connects to backend ---- */
+  async function submitDispute() {
+    const reason   = document.getElementById('disputeReason').value.trim();
+    const evidence = document.getElementById('disputeEvidence').value.trim();
+
     if (!reason) { alert('Please describe the reason for the dispute.'); return; }
     closeModal('modalDispute');
+
+    try {
+      await fetch(`${API}/api/deals/${deal.dealId}/dispute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason, evidence })
+      });
+    } catch(e) {
+      console.log('Backend offline, updating locally');
+    }
+
     setStatus('disputed');
   }
 
@@ -408,6 +481,48 @@
   }
 
   /* ---- Init ---- */
+  async function loadDeal() {
+    // Check if returning from Interswitch payment page
+    if (param('paid') === 'true') {
+      const ref = param('ref');
+      if (ref) {
+        toast('⏳ Verifying your payment...');
+        try {
+          const res  = await fetch(`${API}/api/pay/verify/${ref}`);
+          const data = await res.json();
+          if (data.success) {
+            // Update localStorage too
+            const stored = JSON.parse(localStorage.getItem('truvapay_deals') || '[]');
+            const idx = stored.findIndex(d => d.dealId === dealId);
+            if (idx > -1) { stored[idx].status = 'funded'; localStorage.setItem('truvapay_deals', JSON.stringify(stored)); }
+            toast('✅ Payment confirmed! Deal is now funded.');
+          }
+        } catch(e) { console.log('Verify error:', e); }
+      }
+    }
+
+    // Try backend first
+    try {
+      const res  = await fetch(`${API}/api/deals/${dealId}`);
+      const data = await res.json();
+      if (data.success && data.deal) {
+        deal = data.deal;
+        render();
+        setTimeout(startCountdown, 500);
+        return;
+      }
+    } catch(e) {
+      console.log('Backend offline — using localStorage');
+    }
+
+    // Fall back to localStorage then demo
+    const stored = JSON.parse(localStorage.getItem('truvapay_deals') || '[]');
+    deal = stored.find(d => d.dealId === dealId)
+        || DEMO_DEALS.find(d => d.dealId === dealId)
+        || DEMO_DEALS[0];
+
+    render();
+    setTimeout(startCountdown, 500);
+  }
+
   loadDeal();
-  setTimeout(startCountdown, 500);
-</script>
