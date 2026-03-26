@@ -334,3 +334,30 @@ footer p{color:var(--text-light);font-size:.85rem}
   .form-row{grid-template-columns:1fr}
   footer{flex-direction:column;text-align:center}
 }
+
+/* --- EMERGENCY MODAL FIX --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+/* This forces the modal to show when JS adds 'show' or 'open' */
+.modal-overlay.show, 
+.modal-overlay.open {
+    display: flex !important;
+}
+
+.modal {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+}
