@@ -1,117 +1,56 @@
- #TruvaPay
+ 🛡️ TruvaPay: Secure Escrow for Everyone
+The most secure way to trade in Nigeria. Developed for the Enyata × Interswitch Buildathon 2026.
 
-**Overview**
+🚀 Quick Links
+🌐 Live Website: https://dami-ann.github.io/truvapay/index.html
 
-TruvaPay is a secure escrow-based payment platform designed to protect freelancers, SMEs, and online buyers from payment fraud.
+🔗 Backend API Repo: https://github.com/Dami-Ann/truvapay_backend
 
-It allows sellers to generate a secure deal link that buyers can use to make payments safely. Funds are held securely until the buyer confirms delivery or the agreed conditions are met.
+📡 Live API (Render): https://truvapay-api.onrender.com
 
-This project is being developed for the Enyata × Interswitch Buildathon 2026.
+🔑 Team Code: [79da13]
 
----
+📖 Project Overview
+TruvaPay is a secure escrow-based payment platform designed to protect freelancers, SMEs, and online buyers from payment fraud. We allow sellers to generate a secure Deal Link where funds are held safely until the buyer confirms delivery.
 
-**Problem**
+The Problem
+Many online transactions in Nigeria happen through informal channels like WhatsApp and Instagram. These lack protection, leading to:
 
-Many online transactions in Nigeria and globally happen through:
+Buyers losing money to "scam" vendors.
 
-- WhatsApp
-- Instagram
-- Informal freelance agreements
+Sellers delivering work but never getting paid.
 
-These transactions often lack protection, leading to:
+A general lack of trust in social commerce.
 
-- Buyers losing money to fake sellers
-- Sellers delivering services but not getting paid
-- High levels of distrust in online commerce
+The Solution
+TruvaPay acts as a trusted middleman. By integrating the Interswitch API, we ensure that money only moves when both parties have fulfilled their promise.
 
----
+⚙️ Core Features (MVP)
+Secure Deal Link Generation: Sellers create custom links for specific transactions.
 
-**Solution**
+Escrow Payment Holding: Funds are locked via Interswitch until delivery.
 
-TruvaPay introduces a secure deal link system where:
+Delivery Tracking: Sellers submit proof of delivery directly through the platform.
 
-1. A seller creates a deal.
-2. A payment link is generated.
-3. The buyer pays through the secure link.
-4. Funds are held temporarily.
-5. Payment is released only after delivery confirmation or agreement conditions.
+Buyer Protection: Buyers can approve the release of funds or Open a Dispute if terms aren't met.
 
-This creates trust between both parties.
+Dynamic Dashboard: Real-time tracking of deal status (Pending, Funded, Delivered).
 
----
+🛠️ Technical Stack
+Frontend: HTML5, CSS3, JavaScript (Vanilla)
 
-**User Flow**
+Backend: Node.js, Express.js
 
-1. Seller creates a deal
-   
-   - The seller enters the deal amount, description, and delivery terms.
+Database: MongoDB Atlas
 
-2. TruvaPay generates a secure deal link
-   
-   - A unique payment link is created and shared with the buyer.
+Payment Gateway: Interswitch API Integration
 
-3. Buyer makes payment
-   
-   - The buyer opens the link and completes the payment securely through Interswitch.
+Deployment: GitHub Pages (Frontend) & Render (Backend)
 
-4. Funds are held temporarily
-   
-   - The payment is held securely while the seller completes the service or delivers the product.
+🧪 Submission Note for Judges
+Note on Payment Testing: The platform is fully integrated with the Interswitch API. Due to current instabilities with the provided test credentials (as noted in the Buildathon communications), some payment attempts may return a "Failed" status. However, the internal Escrow logic and UI state changes for Delivery and Dispute are fully implemented and ready for live environment deployment.
 
-5. Delivery confirmation
-   
-   - The buyer confirms that the product or service has been delivered.
+👥 The Team
+Dami-Ann (Lead Developer): Frontend & Backend Integration
 
-6. Payment release
-   
-   - Once confirmed (or after the agreed time window), the payment is released to the seller.
-
-7. Dispute option
-   
-   - If there is a problem, the buyer can raise a dispute before the funds are released.
-
-**Core Features (MVP)**
-- Secure Deal Link Generation
-- Escrow-style Payment Holding
-- Delivery Confirmation
-- Conditional Payment Release
-- Dispute Reporting
-- Transaction Dashboard
-
----
-
-**Planned Tech Stack**
-Frontend:
-- HTML
-- CSS
-- JavaScript
-
-Backend:
-- Node.js
-
-Payments:
-- Interswitch API integration
-
----
-
-**Target Users**
-- Freelancers
-- SMEs
-- Social media vendors
-- Cross-border buyers purchasing for family or friends
-
----
-
-**Team**
-- Frontend Developer
-- Cybersecurity Engineer
-- Product Designer
-- Product Manager
-
----
-
-**Status**
-
-Currently in development for the Buildathon MVP stage.
-
-Backend Repository: https://github.com/Dami-Ann/truvapay_backend
+Team Members: Cybersecurity Engineer, Product Designer, Product Manager
