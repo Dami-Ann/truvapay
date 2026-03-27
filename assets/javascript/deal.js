@@ -29,8 +29,10 @@ async function loadDealDetails() {
 function renderDealUI(deal) {
     const root = document.getElementById('dealRoot');
     
-    // Formatting the date nicely
-    const displayDate = deal.date ? new Date(deal.date).toLocaleDateString() : 'No Date Set';
+    // 🧪 FIX 1: The "No Date Set" logic
+    // We check for 'deadline' first, then 'date'. If both are missing, we show 'Pending'
+    const rawDate = deal.deadline || deal.date;
+    const displayDate = rawDate ? new Date(rawDate).toLocaleDateString() : 'Pending';
 
     root.innerHTML = `
       <div class="card">
@@ -64,13 +66,28 @@ function renderDealUI(deal) {
         <div class="deal-actions">
             ${deal.status === 'pending' ? 
                 `<button class="btn btn-primary btn-lg btn-full" onclick="openModal('modalFund')">Fund Deal Now (₦${deal.amount.toLocaleString()})</button>` :
-                `<button class="btn btn-success btn-lg btn-full" disabled>✓ Deal Funded</button>`
+                ''
+            }
+
+            ${deal.status === 'funded' ? 
+                `<div style="display:flex; gap:10px;">
+                    <button class="btn btn-primary btn-lg" style="flex:2" onclick="openModal('modalDeliver')">Submit Delivery</button>
+                    <button class="btn btn-outline btn-lg" style="flex:1" onclick="openModal('modalDispute')">Dispute</button>
+                </div>` : 
+                ''
+            }
+
+            ${deal.status === 'delivered' ? 
+                `<div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="btn btn-success btn-lg btn-full" onclick="approveDelivery()">✓ Approve & Release Funds</button>
+                    <button class="btn btn-danger btn-lg btn-full" onclick="openModal('modalDispute')">⚠️ Open Dispute</button>
+                </div>` : 
+                ''
             }
         </div>
       </div>
     `;
 
-    // Update the amount inside the popup modal too
     const modalAmt = document.getElementById('modalAmt');
     if (modalAmt) modalAmt.textContent = `₦${deal.amount.toLocaleString()}`;
 }
@@ -101,13 +118,19 @@ async function initiatePayment() {
         const result = await response.json();
         
         if (result.success && result.paymentUrl) {
-            // Redirect to Interswitch
             window.location.href = result.paymentUrl; 
         } else {
             alert("Error: " + result.message);
         }
     } catch (e) {
-        alert("Server is offline. Run 'node server.js'");
+        alert("Server connection failed. Please check your internet.");
+    }
+}
+
+// 🧪 Added Placeholder for Approve Delivery
+async function approveDelivery() {
+    if(confirm("Are you sure? This will release the funds to the seller immediately.")) {
+        alert("Release funds logic triggered. (Update your API to handle status: 'completed')");
     }
 }
 
