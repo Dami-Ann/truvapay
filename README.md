@@ -113,3 +113,5 @@ Payments:
 **Status**
 
 Currently in development for the Buildathon MVP stage.
+
+Backend Repository: https://github.com/Dami-Ann/truvapay_backend
